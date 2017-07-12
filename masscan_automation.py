@@ -85,14 +85,15 @@ def vuln_management(results, api):
 
 def run_mass_scan(ip_address, API_KEY):
     try:
-        MASS_SCAN = "./masscan " + ip_address + " -p 0-65535 --output-filename results.xml --rate 5000000"
-        api       = shodan.Shodan(API_KEY)
-        print "[*] Running Masscan "
-        print "[+]" + "\" " + MASS_SCAN + "\""
-        p = subprocess.Popen(MASS_SCAN, shell=True, stderr=subprocess.PIPE) #Improper/Insecure way to run this, time is not my friend, this hacky way will work
-        (output, err) = p.communicate()
+        for part1 in range(0, 255):                              
+         MASS_SCAN = "./masscan " + part1 + ".0.0.0/16 -p 0-65535 --output-filename results.xml --rate 5000000"
+         api       = shodan.Shodan(API_KEY)
+         print "[*] Running Masscan "
+         print "[+]" + "\" " + MASS_SCAN + "\""
+         p = subprocess.Popen(MASS_SCAN, shell=True, stderr=subprocess.PIPE) #Improper/Insecure way to run this, time is not my friend, this hacky way will work
+         (output, err) = p.communicate()
 
-        if output:
+         if output:
             results = open('results.xml', 'r')
             if results:
                 print "[*] ----- Scan Complete ----- "
