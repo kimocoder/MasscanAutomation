@@ -86,7 +86,7 @@ def vuln_management(results, api):
 def run_mass_scan(ip_address, API_KEY):
     try:
         for part1 in range(0, 255):                              
-         MASS_SCAN = "./masscan " + part1 + ".0.0.0/16 -p 0-65535 --output-filename results.xml --rate 5000000"
+         MASS_SCAN = "./masscan " + str(part1) + ".0.0.0/16 -p 0-65535 --output-filename results.xml --rate 5000000"
          api       = shodan.Shodan(API_KEY)
          print "[*] Running Masscan "
          print "[+]" + "\" " + MASS_SCAN + "\""
