@@ -31,13 +31,13 @@ def vuln_management(results, api):
     try:
         #A dictionary containing the ports/ service_dict that Shodan crawls for.
         #Format: {'Port': service}
-        service_dict  = api.service_dict()
+        #service_dict  = api.service_dict()
         host_dict     = {} 
         service_count = {}
         soup          = BeautifulSoup(results, "lxml")
 
         #Convert Shodan's Unicode results to String
-        service_dict = { str(key):value for key,value in service_dict.items() }
+        #service_dict = { str(key):value for key,value in service_dict.items() }
 
         #Collect Host Information
         for addr in soup.findAll('host'):
@@ -55,27 +55,27 @@ def vuln_management(results, api):
             port_list_len = len(elems)
             if port_list_len > 1:
                 for vals in elems:
-                    if str(vals) in service_dict:
-                        service = service_dict[vals]
-                        if service not in service_count:
-                            service_count[str(service)] = 1
-                        else:
-                            service_count[str(service)] += 1
-                    else:
-                        if vals not in service_count:
-                            service_count[str('Port ' + vals)] = 1
-                        else:
+                    #if str(vals) in service_dict:
+                        #service = service_dict[vals]
+                        #if service not in service_count:
+                        #    service_count[str(service)] = 1
+                        #else:
+                     #       service_count[str(service)] += 1
+                    #else:
+                        #if vals not in service_count:
+                        #    service_count[str('Port ' + vals)] = 1
+                        #else:
                             service_count[str('Port ' + vals)] += 1
-            elif elems[0] in service_dict:
-                service = service_dict[elems[0]]
-                if service not in service_count:
-                    service_count[str(service)] = 1
-                else:
-                    service_count[str(service)] += 1
+            #elif elems[0] in service_dict:
+                #service = service_dict[elems[0]]
+                #if service not in service_count:
+                #    service_count[str(service)] = 1
+                #else:
+                #    service_count[str(service)] += 1
             else:
-                if elems not in service_count:
-                    service_count[str('Port ' + elems[0])] = 1
-                else:
+                #if elems not in service_count:
+                #    service_count[str('Port ' + elems[0])] = 1
+                #else:
                     service_count[str('Port ' + elems[0])] += 1  
         if (host_dict and service_count):
             print_results(host_dict, service_count)
