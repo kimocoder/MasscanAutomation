@@ -31,13 +31,13 @@ def vuln_management(results, api):
     try:
         #A dictionary containing the ports/ service_dict that Shodan crawls for.
         #Format: {'Port': service}
-        service_dict  = api.service_dict()
+        #service_dict  = api.service_dict()
         host_dict     = {} 
         service_count = {}
         soup          = BeautifulSoup(results, "lxml")
 
         #Convert Shodan's Unicode results to String
-        service_dict = { str(key):value for key,value in service_dict.items() }
+        #service_dict = { str(key):value for key,value in service_dict.items() }
 
         #Collect Host Information
         for addr in soup.findAll('host'):
@@ -55,28 +55,28 @@ def vuln_management(results, api):
             port_list_len = len(elems)
             if port_list_len > 1:
                 for vals in elems:
-                    if str(vals) in service_dict:
-                        service = service_dict[vals]
-                        if service not in service_count:
-                            service_count[str(service)] = 1
-                        else:
-                            service_count[str(service)] += 1
-                    else:
-                        if vals not in service_count:
-                            service_count[str('Port ' + vals)] = 1
-                        else:
+                    #if str(vals) in service_dict:
+                        #service = service_dict[vals]
+                        #if service not in service_count:
+                        #    service_count[str(service)] = 1
+                        #else:
+                     #       service_count[str(service)] += 1
+                    #else:
+                        #if vals not in service_count:
+                        #    service_count[str('Port ' + vals)] = 1
+                        #else:
                             service_count[str('Port ' + vals)] += 1
-            elif elems[0] in service_dict:
-                service = service_dict[elems[0]]
-                if service not in service_count:
-                    service_count[str(service)] = 1
-                else:
-                    service_count[str(service)] += 1
+            #elif elems[0] in service_dict:
+                #service = service_dict[elems[0]]
+                #if service not in service_count:
+                #    service_count[str(service)] = 1
+                #else:
+                #    service_count[str(service)] += 1
             else:
-                if elems not in service_count:
-                    service_count[str('Port ' + elems[0])] = 1
-                else:
-                    service_count[str('Port ' + elems[0]] += 1  
+                #if elems not in service_count:
+                #    service_count[str('Port ' + elems[0])] = 1
+                #else:
+                    service_count[str('Port ' + elems[0])] += 1  
         if (host_dict and service_count):
             print_results(host_dict, service_count)
 
@@ -85,14 +85,15 @@ def vuln_management(results, api):
 
 def run_mass_scan(ip_address, API_KEY):
     try:
-        MASS_SCAN = "./masscan " + ip_address + " -p 0-65535 --output-filename results.xml --rate 5000000"
-        api       = shodan.Shodan(API_KEY)
-        print "[*] Running Masscan "
-        print "[+]" + "\" " + MASS_SCAN + "\""
-        p = subprocess.Popen(MASS_SCAN, shell=True, stderr=subprocess.PIPE) #Improper/Insecure way to run this, time is not my friend, this hacky way will work
-        (output, err) = p.communicate()
+        for part1 in range(0, 255):                              
+         MASS_SCAN = "./masscan " + str(part1) + ".0.0.0/16 -p 0-65535 --output-filename results.xml --rate 5000000"
+         api       = shodan.Shodan(API_KEY)
+         print "[*] Running Masscan "
+         print "[+]" + "\" " + MASS_SCAN + "\""
+         p = subprocess.Popen(MASS_SCAN, shell=True, stderr=subprocess.PIPE) #Improper/Insecure way to run this, time is not my friend, this hacky way will work
+         (output, err) = p.communicate()
 
-        if output:
+         if output:
             results = open('results.xml', 'r')
             if results:
                 print "[*] ----- Scan Complete ----- "
